@@ -13,11 +13,11 @@ module.exports = {
 		port: 3000,
 		contentBase: path.resolve(__dirname, "build"),
 		watchContentBase: true,
-		// proxy: {
-		// 	"/": {
-		// 		target: "http://localhost:5000",
-		// 	},
-		// },
+		proxy: {
+			"/": {
+				target: "http://localhost:5000",
+			},
+		},
 	},
 	resolve: {
 		extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],

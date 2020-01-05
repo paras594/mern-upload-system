@@ -1,9 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
+import Images from "./components/Images";
 
 const App = () => {
 	const [name, setName] = useState("");
 	const [file, setFile] = useState({});
+	const [images, setImages] = useState([]);
+
+	function getImages() {
+		Axios.get("http://localhost:5000/images").then(res => {
+			setImages(res.data);
+		});
+	}
+
+	useEffect(() => {
+		getImages();
+	}, []);
+
 	const handleSubmit = e => {
 		e.preventDefault();
 
@@ -16,7 +29,7 @@ const App = () => {
 		Axios.post("http://localhost:5000/add", data, {
 			headers: { "Content-Type": "multipart/form-data" },
 		}).then(res => {
-			console.log(res.data);
+			getImages();
 		});
 	};
 
@@ -25,22 +38,25 @@ const App = () => {
 	};
 
 	return (
-		<form encType="multipart/form-data" onSubmit={handleSubmit}>
-			<label htmlFor="name">Name: </label>
-			<input
-				type="text"
-				name="name"
-				onChange={e => setName(e.target.value)}
-				value={name}
-			/>
-			<br />
-			<br />
-			<label htmlFor="file">File: </label>
-			<input type="file" name="file" onChange={handleSelectedFile} />
-			<br />
-			<br />
-			<button type="submit">Submit</button>
-		</form>
+		<>
+			<form encType="multipart/form-data" onSubmit={handleSubmit}>
+				<label htmlFor="name">Name: </label>
+				<input
+					type="text"
+					name="name"
+					onChange={e => setName(e.target.value)}
+					value={name}
+				/>
+				<br />
+				<br />
+				<label htmlFor="file">File: </label>
+				<input type="file" name="file" onChange={handleSelectedFile} />
+				<br />
+				<br />
+				<button type="submit">Submit</button>
+			</form>
+			<Images images={images} />
+		</>
 	);
 };
 

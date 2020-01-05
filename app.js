@@ -10,6 +10,9 @@ const app = express();
 // database connection
 require("./db.js");
 
+app.use("/public", express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -45,12 +48,6 @@ const upload = multer({
 	}
 });
 
-app.get("/", (req, res) => {
-	res.json({
-		message: "working"
-	});
-});
-
 app.post("/add", upload.single("imageURL"), (req, res, next) => {
 	console.log(req.file);
 	const user = new User({
@@ -65,4 +62,14 @@ app.post("/add", upload.single("imageURL"), (req, res, next) => {
 	});
 });
 
+app.get("/images", (req, res) => {
+	User.find({}, { imageURL: 1 }, (err, result) => {
+		if (err) {
+			res.json({
+				message: err
+			});
+		}
+		res.json(result);
+	});
+});
 app.listen(5000, () => console.log("listening on port 3000"));
